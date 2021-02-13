@@ -46,7 +46,7 @@ model.add(layers.Dense(1))
 model.summary()
 
 model.compile(loss='mse', optimizer='adam')
-history_object = model.fit(X_train, y_train, validation_split=0.2, epochs=7, shuffle=True)
+history_object = model.fit(X_train, y_train, validation_split=0.2, epochs=30, shuffle=True)
 model.save('model.h5')
 
 # print the keys contained in the history object
