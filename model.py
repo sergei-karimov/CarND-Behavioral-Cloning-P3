@@ -37,31 +37,31 @@ def data_generator(samples, batch_size, augmentation_is_needed=True):
                 images.append(center_image)
                 center_measurement = float(line[3])
                 angles.append(center_measurement)
-                # if augmentation_is_needed:
-                #     images.append(cv2.flip(center_image, 1))
-                #     angles.append(center_measurement * -1.0)
+                if augmentation_is_needed:
+                    images.append(cv2.flip(center_image, 1))
+                    angles.append(center_measurement * -1.0)
 
                 left_image_path = sample[1]
                 left_image_file_name = left_image_path.split('/')[-1]
                 left_current_file_name = f'data/IMG/{left_image_file_name}'
                 left_image = cv2.imread(left_current_file_name)
                 images.append(left_image)
-                left_measurement = float(line[3]) + 0.3
+                left_measurement = float(line[3]) + 0.2
                 angles.append(left_measurement)
-                # if augmentation_is_needed:
-                #     images.append(cv2.flip(left_image, 1))
-                #     angles.append(left_measurement * -1.0)
+                if augmentation_is_needed:
+                    images.append(cv2.flip(left_image, 1))
+                    angles.append(left_measurement * -1.0)
 
                 right_image_path = sample[2]
                 right_image_file_name = right_image_path.split('/')[-1]
                 right_current_file_name = f'data/IMG/{right_image_file_name}'
                 right_image = cv2.imread(right_current_file_name)
                 images.append(right_image)
-                right_measurement = float(line[3]) - 0.3
+                right_measurement = float(line[3]) - 0.2
                 angles.append(right_measurement)
-                # if augmentation_is_needed:
-                #     images.append(cv2.flip(right_image, 1))
-                #     angles.append(right_measurement * -1.0)
+                if augmentation_is_needed:
+                    images.append(cv2.flip(right_image, 1))
+                    angles.append(right_measurement * -1.0)
 
             X_train = np.array(images)
             y_train = np.array(angles)
@@ -71,7 +71,7 @@ def data_generator(samples, batch_size, augmentation_is_needed=True):
             yield X_train, y_train
 
 
-def mx_net():
+def nv_model():
     m = Sequential()
     m.add(Cropping2D(cropping=((50, 20), (0, 0)), input_shape=(160, 320, 3)))
     m.add(Lambda(lambda x: (x / 255.0) - 0.5))
@@ -90,13 +90,11 @@ def mx_net():
     m.add(Dense(10, activation='relu'))
     m.add(Dropout(0.2))
     m.add(Dense(1))
-    opt = RMSprop(learning_rate=0.0001, rho=0.9, momentum=0.0, epsilon=1e-07, centered=False, name='RMSprop')
-    m.compile(optimizer=opt, loss="mse")
+    model.compile(loss='mse', optimizer='adam')
     return m
 
 
-model = mx_net()
-# model.compile(loss='mse', optimizer='adam')
+model = nv_model()
 model.summary()
 
 X_train, X_validation = train_test_split(lines, test_size=TEST_SIZE)
